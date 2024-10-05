@@ -43,10 +43,15 @@ jobs:
         cd client
         npm install
 
+    - name: Add missing Babel plugin
+      run: |
+        cd client
+        npm install --save-dev @babel/plugin-proposal-private-property-in-object
+
     - name: Build Tauri app
       run: |
         cd client
-        npm run tauri
+        npm run tauri build
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
