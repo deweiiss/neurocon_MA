@@ -45,4 +45,4 @@ jobs:
     - name: Build Tauri app
       run: |
         cd client
-        npm run tauri build
+        npm run tauri
