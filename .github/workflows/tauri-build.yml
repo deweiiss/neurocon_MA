@@ -51,7 +51,7 @@ jobs:
     - name: Build Tauri app
       run: |
         cd client
-        npm run tauri build
+        npm run tauri
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
