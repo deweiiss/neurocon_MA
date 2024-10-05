@@ -43,7 +43,7 @@ jobs:
         working-directory: client  # Set the correct directory to locate package.json
 
       - name: Build Tauri App
-        run: npm run tauri build
+        run: npm run tauri
         working-directory: client  # Set the correct directory for building
 
       - name: Upload artifacts
