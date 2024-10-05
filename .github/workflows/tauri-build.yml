@@ -47,3 +47,9 @@ jobs:
       run: |
         cd client
         npm run tauri
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: tauri-build-${{ matrix.os }}
+        path: client/src-tauri/target/release/bundle/**
