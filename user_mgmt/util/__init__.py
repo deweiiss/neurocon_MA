@@ -1,2 +1,2 @@
-from .db import MongoConnector
+from .db import MongoConnector, mongo_client
 from .session import Session

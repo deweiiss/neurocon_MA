@@ -1,6 +1,7 @@
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
+logging.getLogger("pymongo").setLevel(logging.WARNING)
 
 logging.debug("Starting imports...")
 
@@ -22,7 +23,7 @@ from user.user_handler import UserDBHandler
 logging.debug("Imported UserDBHandler")
 
 from util.session import Session
-from util.db import MongoConnector
+from util.db import MongoConnector, mongo_client
 
 logging.debug("Imported Session and MongoConnector")
 
@@ -41,6 +42,11 @@ CORS(app, resources={"/*": corsConfig})
 mongo = MongoConnector(app)
 db = mongo.connect()
 
+# graceful teardown to close the connection pool
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    if mongo_client is not None:
+        mongo_client.cx.close()
 
 @app.route("/user/signup", methods=['POST'])
 @cross_origin()
@@ -156,6 +162,12 @@ def createUserHelper(userPassword, userPasswordConfirm, userFullName, userMail, 
             }
         ))
     return make_response("User already exists", 501)
+
+# TODO: remove at the end
+@app.route("/health", methods=['GET'])
+@cross_origin()
+def health_check():
+    return make_response("Service is running", 200)
 
 
 if __name__ == "__main__":
