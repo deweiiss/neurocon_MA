@@ -11,7 +11,7 @@ class MongoConnector:
         mongo_client = PyMongo(self.app)
         db = mongo_client.db
         # on first startup insert document
-        if 'sampleCollection' not in db.collection_names():
+        if 'sampleCollection' not in db.list_collection_names():
             db.sampleCollection.insert_one({"name": "Initial Document"})
 
         # TODO: enable scheme check once they are updated
