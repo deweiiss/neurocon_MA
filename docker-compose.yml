@@ -9,6 +9,11 @@ services:
       MONGO_URI: mongodb://mongodb:27017/NEUROCON
     depends_on:
       - mongodb
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5005"] # Check if the Flask server is responding
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   mongodb:
     image: mongo:6.0

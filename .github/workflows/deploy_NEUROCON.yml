@@ -45,11 +45,17 @@ jobs:
         run: |
           docker-compose -f docker-compose.yml up --build -d
 
-      # Step 6: Wait for services to start
-      - name: Wait for Services
+      # Step 6: Wait for Services to Start
+      - name: Wait for Services to be Available
         run: |
-          # Add a wait command to ensure that MongoDB and Flask are up before tests are run
-          sleep 20
+          for i in {1..30}; do
+            if curl --silent --fail http://localhost:5005; then
+              echo "Service is up!"
+              break
+            fi
+            echo "Waiting for user_mgmt to be ready..."
+            sleep 5
+          done
 
       # Step 7: Run Integration Tests (Optional)
       # Here you can run tests to validate the communication between the client and the backend.
