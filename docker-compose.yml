@@ -1,20 +1,6 @@
 version: '3.9'
 
 services:
-  user_mgmt:
-    build: ./user_mgmt
-    ports:
-      - "5005:5005"
-    environment:
-      MONGO_URI: mongodb://mongodb:27017/NEUROCON
-    depends_on:
-      - mongodb
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5005"] # Check if the Flask server is responding
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   mongodb:
     image: mongo:6.0
     container_name: mongodb
@@ -22,6 +8,27 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://localhost:27017 --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  user_mgmt:
+    build: ./user_mgmt
+    ports:
+      - "5005:5005"
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/NEUROCON
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5005"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   mongo_data:
