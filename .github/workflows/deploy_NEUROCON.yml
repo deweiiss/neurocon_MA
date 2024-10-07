@@ -1,0 +1,91 @@
+name: Deploy NEUROCON
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # Step 3: Set up Rust toolchain for Tauri
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      # Step 4: Install Docker Compose (for orchestration)
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      # Step 5: Build Docker images and start services using Docker Compose
+      - name: Build and Start Docker Services
+        run: |
+          docker-compose -f docker-compose.yml up --build -d
+
+      # Step 6: Wait for services to start
+      - name: Wait for Services
+        run: |
+          # Add a wait command to ensure that MongoDB and Flask are up before tests are run
+          sleep 20
+
+      # Step 7: Run Integration Tests (Optional)
+      # Here you can run tests to validate the communication between the client and the backend.
+      - name: Run Integration Tests
+        run: |
+          # You can use curl or any other testing script here to ensure services are working.
+          echo "Running integration tests..."
+          curl --retry 5 --retry-connrefused http://localhost:5005/  # Example call to user_mgmt service
+
+      # Step 8: Install Tauri Client Dependencies
+      - name: Install dependencies (Client)
+        run: |
+          cd client
+          npm install
+
+      # Step 9: Add missing Babel plugin
+      - name: Add missing Babel plugin
+        run: |
+          cd client
+          npm install --save-dev @babel/plugin-proposal-private-property-in-object
+
+      # Step 10: Build Tauri Application
+      - name: Build Tauri App
+        run: |
+          cd client
+          npm run tauri
+
+      # Step 11: Upload Artifacts (Bundle)
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: tauri-backend-bundle
+          path: client/src-tauri/target/release/bundle/**
+
+      # Step 12: Shutdown Docker Compose services
+      - name: Shutdown Docker Compose
+        if: always()
+        run: |
+          docker-compose -f docker-compose.yml down
