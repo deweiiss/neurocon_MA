@@ -12,7 +12,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "concurrently \"cross-env BROWSER=none npm run dev\" \"cargo tauri dev\"",
+    "start": "npm run dev",
+    "start_tauri": "cargo tauri dev",
+    "start_logs": "concurrently -k -n \"react,tauri\" -c \"bgBlue.bold,bgMagenta.bold\" \"cross-env BROWSER=none npm run dev\" \"sleep 5 && cargo tauri dev\"",
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
