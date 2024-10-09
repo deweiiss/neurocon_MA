@@ -7,6 +7,7 @@ import InputPage from "./pages/input";
 import ModellingPage from "./pages/modelling";
 import TrainingPage from "./pages/training";
 import OutputPage from "./pages/output";
+import LogoutComponent from "./components/user/logout_component";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/modelling" element={<ModellingPage/>}/>
             <Route path="/training" element={<TrainingPage/>}/>
             <Route path="/output" element={<OutputPage/>}/>
+            <Route path="/logout" element={<LogoutComponent/>}/>
         </Routes>
       </HashRouter>
   )
