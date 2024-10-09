@@ -5,6 +5,8 @@ import HomePage from "./pages/home";
 import DashboardPage from "./pages/dashboard";
 import InputPage from "./pages/input";
 import ModellingPage from "./pages/modelling";
+import TrainingPage from "./pages/training";
+import OutputPage from "./pages/output";
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
             <Route path="/dashboard" element={<DashboardPage/>}/>
             <Route path="/input" element={<InputPage/>}/>
             <Route path="/modelling" element={<ModellingPage/>}/>
+            <Route path="/training" element={<TrainingPage/>}/>
+            <Route path="/output" element={<OutputPage/>}/>
         </Routes>
       </HashRouter>
   )
