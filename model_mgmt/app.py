@@ -4,15 +4,13 @@ import keras.models
 import requests
 import tensorflow as tf
 from bson import ObjectId, json_util
-from flask import Flask, request
+from flask import Flask, request, make_response
 from flask_cors import CORS, cross_origin
 
-from database_mgmt import MongoConnector
-from model_training_mgmt.handler import ModelDbHandler
-from model_training_mgmt.handler.data_preparator import DataPreparator
-from model_training_mgmt.modelling import VinnslModeller, KerasMapper
-from model_training_mgmt.training import ModelTrainingHandler, TrainingDataHandler, \
-    TrainingOutputHandler
+from .util import MongoConnector
+from .handler import ModelTrainingHandler, ModelDataHandler, TrainingDataHandler, NetworkOutputHandler
+from .modelling import VinnslModeller, KerasMapper
+from .training import ModelUpdater
 
 app = Flask(__name__)
 
@@ -50,7 +48,7 @@ def CreateModel():
         message['bias_constraint']
 
     # prepare frontend data
-    preparator = DataPreparator(batch_input_shape, layerNodeInformationRaw, metricsRaw)
+    preparator = ModelDataHandler(batch_input_shape, layerNodeInformationRaw, metricsRaw)
     batch_input_shape = preparator.prepareBatchInputShape()
     layerNodeInformation = preparator.prepareLayerNodeInformation()
     metrics = preparator.prepareMetrics()
@@ -79,8 +77,8 @@ def CreateModel():
     # TODO: OOOOOR we let the user define a path to save the model!!!
     model.save(modelName)
     # save model to mongo
-    # modelDbHandler = ModelDbHandler(userMail, modelName, db, model, status="not_trained")
-    # modelDbHandler.save()
+    # ,odelUpdater = ModelUpdater(userMail, modelName, db, model, status="not_trained")
+    # modelUpdater.save()
     return "success"
 
 
@@ -97,7 +95,7 @@ def RunTraining():
                                                                                        message['epochs'], \
                                                                                        message['verbosity'], \
                                                                                        message['batchSize']
-    # modelLoader = ModelDbHandler(userMail, modelName, db, model=None, status="not_trained")
+    # modelLoader = ModelUpdater(userMail, modelName, db, model=None, status="not_trained")
     # model = tf.keras.models.model_from_json(modelLoader.load())
 
     strategy = tf.distribute.OneDeviceStrategy(device="/gpu:0")
@@ -109,10 +107,10 @@ def RunTraining():
                                    verbosity, trainingSamples, trainingLabels)
     trainedModel, history = trainer.train()
     print(history)
-    modelSaver = ModelDbHandler(userMail, modelName, db, trainedModel, status="training_complete")
+    modelSaver = ModelUpdater(userMail, modelName, db, trainedModel, status="training_complete")
     modelSaver.save()
     # NOTE: validation was removed for now
-    trainingOutput = TrainingOutputHandler(history, userMail, modelName, db)
+    trainingOutput = NetworkOutputHandler(history, userMail, modelName, db)
     trainingOutput.save()
     return messageOutputMgmtService(userMail, modelName)
 
@@ -174,6 +172,15 @@ def GetModelMetaData():
 def DeleteModel():
     message = request.get_json()
     modelName = message['modelName']
-    modelDb = ModelDbHandler(None, modelName, db, None, None)
-    result = modelDb.delete()
+    modelDb = ModelUpdater(None, modelName, db, None, None)
+    result = (modelDb.delete())
     return result
+
+@app.route("/health", methods=['GET'])
+@cross_origin()
+def health_check():
+    return make_response("Service is running", 200)
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5002)

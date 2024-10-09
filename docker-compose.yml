@@ -54,5 +54,25 @@ services:
       retries: 3
       start_period: 10s
 
+  model_mgmt:
+    build: ./model_mgmt
+    ports:
+      - "5002:5002"
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/NEUROCON
+    depends_on:
+      - mongodb
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5002/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
 volumes:
   mongo_data:
