@@ -45,22 +45,25 @@ jobs:
         run: |
           docker-compose -f docker-compose.yml up --build -d
 
-      # Step 6: Wait for Services to Start
-      - name: Wait for Services to be Available
+      # Step 6: Wait for All Services to Start
+      - name: Wait for All Services to be Available
         run: |
-          for i in {1..30}; do
-            if curl --silent --fail http://user_mgmt:5005; then
-              echo "Service is up!"
-              break
+          services=(user_mgmt input_mgmt)
+          for service in "${services[@]}"; do
+            for i in {1..30}; do
+              if curl --silent --fail http://localhost:5005 || curl --silent --fail http://localhost:5001; then
+                echo "Service $service is up!"
+                break
+              fi
+              echo "Waiting for $service to be ready..."
+              sleep 5
+            done
+            if [ $i -eq 30 ]; then
+              echo "Service $service did not start in time. Displaying logs..."
+              docker-compose logs $service
+              exit 1
             fi
-            echo "Waiting for user_mgmt to be ready..."
-            sleep 5
           done
-          if [ $i -eq 30 ]; then
-            echo "Service did not start in time. Displaying logs..."
-            docker-compose logs user_mgmt
-            exit 1
-          fi
 
       # Step 7: Run Integration Tests (Optional)
       # Here you can run tests to validate the communication between the client and the backend.
@@ -69,6 +72,7 @@ jobs:
           # You can use curl or any other testing script here to ensure services are working.
           echo "Running integration tests..."
           curl --retry 5 --retry-connrefused http://localhost:5005/  # Example call to user_mgmt service
+          curl --retry 5 --retry-connrefused http://localhost:5001/  # Example call to input_mgmt service
 
       # Step 8: Install Tauri Client Dependencies
       - name: Install dependencies (Client)

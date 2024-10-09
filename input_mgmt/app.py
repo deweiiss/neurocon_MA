@@ -3,9 +3,9 @@ from bson.json_util import dumps
 from flask import Flask, request, make_response
 from flask_cors import CORS, cross_origin
 
-from input_mgmt.util import MongoConnector
-from input_mgmt.data import SQLQueryProcessor, DataProcessor, TrainingDBHandler
-from input_mgmt.data.csv_data_processing import CSVProcessor
+from .util import MongoConnector
+from .data import SQLQueryProcessor, DataProcessor, TrainingDBHandler
+from .data.csv_data_processing import CSVProcessor
 
 app = Flask(__name__)
 
