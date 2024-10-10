@@ -95,7 +95,7 @@ services:
       start_period: 10s
 
   report_mgmt:
-    build: ./output_mgmt
+    build: ./report_mgmt
     ports:
       - "5004:5004"
     environment:
