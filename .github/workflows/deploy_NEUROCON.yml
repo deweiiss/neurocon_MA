@@ -51,7 +51,8 @@ jobs:
           services=(user_mgmt input_mgmt model_mgmt output_mgmt report_mgmt)
           for service in "${services[@]}"; do
             for i in {1..30}; do
-              if curl --silent --fail http://localhost:5005 || curl --silent --fail http://localhost:5001 || curl --silent --fail http://localhost:5002 || curl --silent --fail http://localhost:5003 || curl --silent --fail http://localhost:5004; then
+              if curl --silent --fail http://localhost:5005/health || curl --silent --fail http://localhost:5001/health || curl --silent --fail http://localhost:5002/health || curl --silent --fail http://localhost:5003/health || curl --silent --fail http://localhost:5004/health; 
+              then
                 echo "Service $service is up!"
                 break
               fi
