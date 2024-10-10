@@ -2,7 +2,7 @@ from flask import Flask, request, make_response
 from flask_cors import CORS, cross_origin
 
 from .util import MongoConnector
-from output_mgmt.handler import OutputHandler
+from .handler import OutputHandler
 
 app = Flask(__name__)
 
