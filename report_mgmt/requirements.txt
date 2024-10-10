@@ -1,0 +1,6 @@
+Flask==3.0.3
+Flask_Cors==5.0.0
+Flask_PyMongo==2.3.0
+matplotlib==3.9.2
+pandas==2.2.3
+reportlab==4.2.5

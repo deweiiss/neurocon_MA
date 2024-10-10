@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, make_response
 from flask_cors import CORS, cross_origin
 
 from .util import MongoConnector
@@ -52,6 +52,11 @@ def getTrainingOutput():
     output = OutputHandler(userMail, modelName, db)
     jsonData = output.processClient()
     return jsonData
+
+@app.route("/health", methods=['GET'])
+@cross_origin()
+def health_check():
+    return make_response("Service is running", 200)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5003)
