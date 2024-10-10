@@ -45,21 +45,29 @@ jobs:
         run: |
           docker-compose -f docker-compose.yml up --build -d
 
-      # Step 6: Wait for All Services to Start
-      - name: Wait for All Services to be Available
+      # Step 6: Wait for Each Service to Start
+      - name: Wait for Each Service to be Available
         run: |
-          services=(user_mgmt input_mgmt model_mgmt output_mgmt report_mgmt)
-          for service in "${services[@]}"; do
-            for i in {1..30}; do
-              if curl --silent --fail http://localhost:5005/health || curl --silent --fail http://localhost:5001/health || curl --silent --fail http://localhost:5002/health || curl --silent --fail http://localhost:5003/health || curl --silent --fail http://localhost:5004/health; 
-              then
+          declare -A services
+          services=(
+            ["user_mgmt"]="http://localhost:5005/health"
+            ["input_mgmt"]="http://localhost:5001/health"
+            ["model_mgmt"]="http://localhost:5002/health"
+            ["output_mgmt"]="http://localhost:5003/health"
+            ["report_mgmt"]="http://localhost:5004/health"
+          )
+          
+          for service in "${!services[@]}"; do
+            url="${services[$service]}"
+            for i in {1..50}; do  # Increase retries if needed
+              if curl --silent --fail "$url"; then
                 echo "Service $service is up!"
                 break
               fi
-              echo "Waiting for $service to be ready..."
+              echo "Waiting for $service to be ready at $url..."
               sleep 5
             done
-            if [ $i -eq 30 ]; then
+            if [ $i -eq 50 ]; then
               echo "Service $service did not start in time. Displaying logs..."
               docker-compose logs $service
               exit 1
