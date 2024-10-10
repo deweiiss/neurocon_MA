@@ -48,10 +48,10 @@ jobs:
       # Step 6: Wait for All Services to Start
       - name: Wait for All Services to be Available
         run: |
-          services=(user_mgmt input_mgmt)
+          services=(user_mgmt input_mgmt model_mgmt output_mgmt report_mgmt)
           for service in "${services[@]}"; do
             for i in {1..30}; do
-              if curl --silent --fail http://localhost:5005 || curl --silent --fail http://localhost:5001; then
+              if curl --silent --fail http://localhost:5005 || curl --silent --fail http://localhost:5001 || curl --silent --fail http://localhost:5002 || curl --silent --fail http://localhost:5003 || curl --silent --fail http://localhost:5004; then
                 echo "Service $service is up!"
                 break
               fi
@@ -71,8 +71,11 @@ jobs:
         run: |
           # You can use curl or any other testing script here to ensure services are working.
           echo "Running integration tests..."
-          curl --retry 5 --retry-connrefused http://localhost:5005/  # Example call to user_mgmt service
-          curl --retry 5 --retry-connrefused http://localhost:5001/  # Example call to input_mgmt service
+          curl --retry 5 --retry-connrefused http://localhost:5005/health  # Example call to user_mgmt service
+          curl --retry 5 --retry-connrefused http://localhost:5001/health  # Example call to input_mgmt service
+          curl --retry 5 --retry-connrefused http://localhost:5002/health  # Example call to model_mgmt service
+          curl --retry 5 --retry-connrefused http://localhost:5003/health  # Example call to output_mgmt service
+          curl --retry 5 --retry-connrefused http://localhost:5004/health  # Example call to report_mgmt service
 
       # Step 8: Install Tauri Client Dependencies
       - name: Install dependencies (Client)
