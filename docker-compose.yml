@@ -28,7 +28,7 @@ services:
         max-size: "10m"
         max-file: "3"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:5005/" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:5005/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -48,7 +48,7 @@ services:
         max-size: "10m"
         max-file: "3"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:5001/" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:5001/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -68,7 +68,7 @@ services:
         max-size: "10m"
         max-file: "3"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:5002/" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:5002/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -88,7 +88,7 @@ services:
         max-size: "10m"
         max-file: "3"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:5003/" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:5003/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -108,7 +108,7 @@ services:
         max-size: "10m"
         max-file: "3"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:5004/" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:5004/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
