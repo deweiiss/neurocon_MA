@@ -52,3 +52,6 @@ def getTrainingOutput():
     output = OutputHandler(userMail, modelName, db)
     jsonData = output.processClient()
     return jsonData
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5003)
