@@ -34,6 +34,13 @@ jobs:
           toolchain: stable
           override: true
 
+
+      # Step 3.5: Install GTK 3 dependencies
+      - name: Install GTK 3 dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev
+
       # Step 4: Install Docker Compose (for orchestration)
       - name: Install Docker Compose
         run: |
