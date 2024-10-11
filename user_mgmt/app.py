@@ -167,7 +167,7 @@ def createUserHelper(userPassword, userPasswordConfirm, userFullName, userMail, 
 @app.route("/health", methods=['GET'])
 @cross_origin()
 def health_check():
-    return make_response("Service is running", 200)
+    return make_response("User Service is running ", 200)
 
 
 if __name__ == "__main__":

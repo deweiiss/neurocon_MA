@@ -179,7 +179,7 @@ def DeleteModel():
 @app.route("/health", methods=['GET'])
 @cross_origin()
 def health_check():
-    return make_response("Service is running", 200)
+    return make_response("Model Service is running ", 200)
 
 
 if __name__ == "__main__":
