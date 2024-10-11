@@ -38,7 +38,7 @@ jobs:
       - name: Install Dependencies for Tauri Build
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libsoup3-dev libjavascriptcoregtk-4.1-dev
+          sudo apt-get install -y libgtk-3-dev libsoup-2.4-dev libjavascriptcoregtk-4.1-dev
 
       # Step 4: Install Docker Compose (for orchestration)
       - name: Install Docker Compose
