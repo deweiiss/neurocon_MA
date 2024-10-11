@@ -40,6 +40,7 @@ class AuthenticationPage extends Component {
                 {component}
                 <div className="col-4 offset-4 mt-2">
                     {footerCopy}
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <a className="btn link-primary mb-1 text-decoration-underline"
                        onClick={this.onChangeComponentControl}>{buttonCopy}</a>
                 </div>
