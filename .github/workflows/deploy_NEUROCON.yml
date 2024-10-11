@@ -38,20 +38,20 @@ jobs:
       - name: Install Dependencies for Tauri Build
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libsoup2.4 libjavascriptcoregtk-4.1-dev
+          sudo apt-get install -y libgtk-3-dev libsoup3-dev libjavascriptcoregtk-4.1-dev
 
-      # Step 4: Install Docker Compose (for orchestration)
+      # Step 5: Install Docker Compose (for orchestration)
       - name: Install Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      # Step 5: Build Docker images and start services using Docker Compose
+      # Step 6: Build Docker images and start services using Docker Compose
       - name: Build and Start Docker Services
         run: |
           docker-compose -f docker-compose.yml up --build -d
 
-      # Step 6: Wait for Each Service to Start
+      # Step 7: Wait for Each Service to Start
       - name: Wait for Each Service to be Available
         run: |
           declare -A services
@@ -80,7 +80,7 @@ jobs:
             fi
           done
 
-      # Step 7: Run Integration Tests (Optional)
+      # Step 8: Run Integration Tests (Optional)
       # Here you can run tests to validate the communication between the client and the backend.
       - name: Run Integration Tests
         run: |
@@ -92,32 +92,32 @@ jobs:
           curl --retry 5 --retry-connrefused http://localhost:5003/health  # Example call to output_mgmt service
           curl --retry 5 --retry-connrefused http://localhost:5004/health  # Example call to report_mgmt service
 
-      # Step 8: Install Tauri Client Dependencies
+      # Step 9: Install Tauri Client Dependencies
       - name: Install dependencies (Client)
         run: |
           cd client
           npm install
 
-      # Step 9: Add missing Babel plugin
+      # Step 10: Add missing Babel plugin
       - name: Add missing Babel plugin
         run: |
           cd client
           npm install --save-dev @babel/plugin-proposal-private-property-in-object
 
-      # Step 10: Build Tauri Application
+      # Step 11: Build Tauri Application
       - name: Build Tauri App
         run: |
           cd client
           CI=false npm run tauri
 
-      # Step 11: Upload Artifacts (Bundle)
+      # Step 12: Upload Artifacts (Bundle)
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: tauri-backend-bundle
           path: client/src-tauri/target/release/bundle/**
 
-      # Step 12: Shutdown Docker Compose services
+      # Step 13: Shutdown Docker Compose services
       - name: Shutdown Docker Compose
         if: always()
         run: |
