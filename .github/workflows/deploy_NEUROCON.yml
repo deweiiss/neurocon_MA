@@ -102,7 +102,7 @@ jobs:
       - name: Build Tauri App
         run: |
           cd client
-          DISABLE_ESLINT_PLUGIN=true npm run tauri -- --ci false
+          CI=false npm run tauri -- --ci false
 
       # Step 11: Upload Artifacts (Bundle)
       - name: Upload Build Artifacts
