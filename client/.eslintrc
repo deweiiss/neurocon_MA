@@ -1,4 +1,0 @@
-"rules": {
-  "no-unused-vars": "warn",
-  "jsx-a11y/anchor-is-valid": "off"
-}
