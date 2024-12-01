@@ -34,7 +34,7 @@ class LoginComponent extends Component {
 
     onSubmit(e) {
         e.preventDefault();
-        axios.post('http://localhost:5005/login', this.state)
+        axios.post('http://localhost:5005/user/login', this.state)
             .then((res) => {
                 console.log(res.data);
                 if (res.status === 200) {

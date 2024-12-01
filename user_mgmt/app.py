@@ -27,6 +27,9 @@ from util.db import MongoConnector, mongo_client
 
 logging.debug("Imported Session and MongoConnector")
 
+from dotenv import load_dotenv
+load_dotenv()
+
 app = Flask(__name__)
 # generate session key
 app.config['SESSION_TYPE'] = 'memcached'
@@ -144,24 +147,54 @@ def deleteAllUsers():
 
 
 def createUserHelper(userPassword, userPasswordConfirm, userFullName, userMail, userRole):
+    # Ensure passwords are strings first
+    userPassword, userPasswordConfirm = str(userPassword), str(userPasswordConfirm)
+    print(f"userPassword type before encoding: {type(userPassword)}")  # Debugging
+
+    # Check if passwords match
     if userPassword != userPasswordConfirm:
-        return make_response("Passwords are not identical", 501)
+        error_message = "Passwords are not identical"
+        print(f"Returning error: {error_message}")
+        return make_response(error_message, 400)
+
+    # Check if user exists
     userDB = UserDBHandler(userFullName, userMail, userPassword, None, db)
     userExists = userDB.find()
-    if not userExists:
-        hashPw = bcrypt.hashpw(userPassword.encode('utf-8'), bcrypt.gensalt())
-        newUser = UserDBHandler(userFullName, userMail, hashPw, userRole, db)
-        newUser.create()
-        session['userMail'] = userMail
-        session['token'] = app.config['SECRET_KEY']
-        return make_response(jsonify(
-            {
-                "token": app.config['SECRET_KEY'],
-                "code": 200,
-                "message": "user created"
-            }
-        ))
-    return make_response("User already exists", 501)
+    if userExists:
+        error_message = "User already exists"
+        print(f"Returning error: {error_message}")
+        return make_response(error_message, 409)
+
+    # Hash the password
+    try:
+        # Explicitly encode password to bytes
+        userPasswordBytes = userPassword.encode('utf-8')  # Always ensure it's bytes
+        print(f"userPassword after encoding: {userPasswordBytes}")  # Debugging
+
+        # Hash the password
+        hashPw = bcrypt.hashpw(userPasswordBytes, bcrypt.gensalt())
+        print(f"Password hashed successfully: {hashPw}")  # Debugging
+    except Exception as e:
+        error_message = f"Invalid password format: {e}"
+        print(f"Returning error: {error_message}")
+        return make_response(error_message, 400)
+
+    # Create the new user
+    newUser = UserDBHandler(userFullName, userMail, hashPw, userRole, db)
+    newUser.create()
+
+    # Set session details
+    session['userMail'] = userMail
+    session['token'] = app.config['SECRET_KEY']
+
+    # Return success response
+    success_message = "User created successfully"
+    print(f"Returning success: {success_message}")
+    return make_response(jsonify({
+        "token": app.config['SECRET_KEY'],
+        "code": 200,
+        "message": success_message
+    }), 200)
 
 # TODO: remove at the end
 @app.route("/health", methods=['GET'])

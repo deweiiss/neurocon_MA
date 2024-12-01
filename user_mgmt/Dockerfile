@@ -13,4 +13,4 @@ COPY . .
 # Set PYTHONPATH to ensure all modules are discoverable
 ENV PYTHONPATH="${PYTHONPATH}:/app"
 
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5005"]
+CMD ["flask", "run", "--host=0.0.0.0", "--port=5005", "--debug"]

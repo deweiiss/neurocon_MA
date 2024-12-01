@@ -33,6 +33,7 @@ class AuthenticationPage extends Component {
             footerCopy = "Got an account already?"
             buttonCopy = "Login"
             component = <SignupComponent/>
+
         }
         return (
             <div>

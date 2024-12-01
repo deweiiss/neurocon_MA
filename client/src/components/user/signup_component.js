@@ -67,7 +67,7 @@ class SignupComponent extends Component {
         if (this.emailValidation()) {
             sessionStorage.setItem('signedUp', 'true')
             e.preventDefault();
-            axios.post('http://localhost:5005/signup', this.state)
+            axios.post('http://localhost:5005/user/signup', this.state)
                 .then((res) => {
                     console.log(res.data);
                     sessionStorage.setItem('token', res.data['token']);
