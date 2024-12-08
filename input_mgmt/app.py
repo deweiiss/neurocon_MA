@@ -3,9 +3,12 @@ from bson.json_util import dumps
 from flask import Flask, request, make_response
 from flask_cors import CORS, cross_origin
 
-from .util import MongoConnector
-from .data import SQLQueryProcessor, DataProcessor, TrainingDBHandler
-from .data.csv_data_processing import CSVProcessor
+from util.db import MongoConnector, mongo_client
+from data import SQLQueryProcessor, DataProcessor, TrainingDBHandler
+from data.csv_data_processing import CSVProcessor
+
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -18,6 +21,12 @@ CORS(app, resources={"/input/*": corsConfig})
 mongo = MongoConnector(app)
 db = mongo.connect()
 
+
+# graceful teardown to close the connection pool
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    if mongo_client is not None:
+        mongo_client.cx.close()
 
 @app.route("/input/all", methods=['GET'])
 @cross_origin()

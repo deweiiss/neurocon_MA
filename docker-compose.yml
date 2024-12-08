@@ -42,7 +42,9 @@ services:
     ports:
       - "5001:5001"
     environment:
-      MONGO_URI: mongodb://mongodb:27017/NEUROCON
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - MONGO_DB_NAME=NEUROCON
     depends_on:
       - mongodb
     logging:
@@ -62,7 +64,9 @@ services:
     ports:
       - "5002:5002"
     environment:
-      MONGO_URI: mongodb://mongodb:27017/NEUROCON
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - MONGO_DB_NAME=NEUROCON
     depends_on:
       - mongodb
     logging:
@@ -82,7 +86,9 @@ services:
     ports:
       - "5003:5003"
     environment:
-      MONGO_URI: mongodb://mongodb:27017/NEUROCON
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - MONGO_DB_NAME=NEUROCON
     depends_on:
       - mongodb
     logging:
@@ -102,7 +108,9 @@ services:
     ports:
       - "5004:5004"
     environment:
-      MONGO_URI: mongodb://mongodb:27017/NEUROCON
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - MONGO_DB_NAME=NEUROCON
     depends_on:
       - mongodb
     logging:
