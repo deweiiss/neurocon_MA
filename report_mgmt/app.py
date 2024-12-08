@@ -1,8 +1,8 @@
 from flask import Flask, request, make_response
 from flask_cors import CORS, cross_origin
 
-from .util import MongoConnector
-from .handler import ReportHandler
+from report_mgmt.util import MongoConnector
+from report_mgmt.handler import ReportHandler
 
 app = Flask(__name__)
 

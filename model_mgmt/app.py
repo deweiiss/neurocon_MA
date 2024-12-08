@@ -7,10 +7,10 @@ from bson import ObjectId, json_util
 from flask import Flask, request, make_response
 from flask_cors import CORS, cross_origin
 
-from .util import MongoConnector
-from .handler import ModelTrainingHandler, ModelDataHandler, TrainingDataHandler, NetworkOutputHandler
-from .modelling import VinnslModeller, KerasMapper
-from .training import ModelUpdater
+from model_mgmt.util import MongoConnector
+from model_mgmt.handler import ModelTrainingHandler, ModelDataHandler, TrainingDataHandler, NetworkOutputHandler
+from model_mgmt.modelling import VinnslModeller, KerasMapper
+from model_mgmt.training import ModelUpdater
 
 app = Flask(__name__)
 

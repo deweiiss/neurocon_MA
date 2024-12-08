@@ -5,7 +5,7 @@ class LogoutComponent extends Component {
     componentDidMount() {
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('userMail');
-        window.location.hash = "/home";
+        window.location.hash = "/";
     }
 
     render() {
